@@ -1,6 +1,6 @@
-Dynamic Workflow Automation System
+Workflow Automation System
 
-This document outlines the architecture and workflow of the Dynamic Workflow Automation System. The system is designed around a seamless transition from workflow design to automated execution and real-time tracking.
+This document outlines the architecture and workflow of the Workflow Automation System. The system is designed around a seamless transition from workflow design to automated execution and real-time tracking.
 
 
 1. Simple Idea
@@ -65,10 +65,30 @@ Failed executions can be retried directly from the tracker, which creates a new 
 
 3. Architectural Tech Stack
 
-Frontend: React + Vite, Tailwind CSS
-Routing: React Router (/ for Dashboard, /workflows/:id/edit for Editor, /workflows/:id/execute for Runner, /executions/:id for Tracker, /audit for Audit Log)
-State and Data Fetching: TanStack React Query
-Backend Services: Node.js, Express, TypeScript
-Database Engine: Prisma ORM, PostgreSQL (hosted on Neon)
-Queue and Worker: BullMQ with Redis (hosted on Upstash)
-Rule Engine: jexl expression evaluator for dynamic condition matching
+Frontend
+- Framework: React + Vite
+- Styling: Tailwind CSS
+- Routing: React Router
+  - / → Dashboard
+  - /workflows/:id/edit → Workflow Editor
+  - /workflows/:id/execute → Execution Runner
+  - /executions/:id → Execution Tracker
+  - /audit → Audit Log
+- State and Data Fetching: TanStack React Query
+
+Backend
+- Runtime: Node.js
+- Framework: Express
+- Language: TypeScript
+
+Database
+- ORM: Prisma
+- Database: PostgreSQL (hosted on Neon)
+
+Queue and Worker
+- Queue: BullMQ
+- Broker: Redis (hosted on Upstash)
+
+Rule Engine
+- Library: jexl
+- Purpose: Evaluates dynamic conditions against execution input data to determine step routing

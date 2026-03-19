@@ -1,4 +1,4 @@
-Dynamic Workflow Automation System
+Workflow Automation System
 
 A full-stack app for building and running dynamic workflows. You define the steps, write rules to control routing, and the system handles execution, logging, and retries.
 

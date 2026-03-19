@@ -1,7 +1,7 @@
 {
   "name": "dynamic-workflow-automation",
   "version": "1.0.0",
-  "description": "Dynamic Workflow Automation System",
+  "description": "Workflow Automation System",
   "private": true,
   "scripts": {
     "install:all": "npm install --prefix backend && npm install --prefix frontend",
