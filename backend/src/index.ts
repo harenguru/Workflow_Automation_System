@@ -1,6 +1,5 @@
 import express from 'express'
 import cors from 'cors'
-import 'dotenv/config'
 
 import workflowRoutes from './routes/workflows'
 import stepRoutes from './routes/steps'

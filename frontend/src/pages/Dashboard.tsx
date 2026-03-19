@@ -88,31 +88,23 @@ export default function Dashboard() {
       </div>
 
       {/* Stats */}
-      {!isLoading && !isError && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          <StatCard
-            label="Total Workflows"
-            value={data?.total ?? 0}
-            icon={GitBranch}
-            gradient="linear-gradient(135deg, #6366f1, #8b5cf6)"
-            glow="0 4px 15px rgba(99,102,241,0.4)"
-          />
-          <StatCard
-            label="Active"
-            value={activeCount}
-            icon={CheckCircle}
-            gradient="linear-gradient(135deg, #10b981, #059669)"
-            glow="0 4px 15px rgba(16,185,129,0.4)"
-          />
-          <StatCard
-            label="Inactive"
-            value={inactiveCount}
-            icon={XCircle}
-            gradient="linear-gradient(135deg, #475569, #334155)"
-            glow="0 4px 15px rgba(71,85,105,0.3)"
-          />
-        </div>
-      )}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        {isLoading ? (
+          Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="rounded-2xl p-5 animate-pulse" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
+              <div className="w-10 h-10 rounded-xl bg-white/5 mb-4" />
+              <div className="h-8 bg-white/5 rounded w-16 mb-2" />
+              <div className="h-3 bg-white/5 rounded w-24" />
+            </div>
+          ))
+        ) : !isError ? (
+          <>
+            <StatCard label="Total Workflows" value={data?.total ?? 0} icon={GitBranch} gradient="linear-gradient(135deg, #6366f1, #8b5cf6)" glow="0 4px 15px rgba(99,102,241,0.4)" />
+            <StatCard label="Active" value={activeCount} icon={CheckCircle} gradient="linear-gradient(135deg, #10b981, #059669)" glow="0 4px 15px rgba(16,185,129,0.4)" />
+            <StatCard label="Inactive" value={inactiveCount} icon={XCircle} gradient="linear-gradient(135deg, #475569, #334155)" glow="0 4px 15px rgba(71,85,105,0.3)" />
+          </>
+        ) : null}
+      </div>
 
       {/* Search */}
       <div className="relative mb-4">
@@ -133,9 +125,19 @@ export default function Dashboard() {
         style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.07)' }}
       >
         {isLoading ? (
-          <div className="py-16 text-center">
-            <div className="inline-block w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mb-3" />
-            <p className="text-sm text-slate-500">Loading workflows...</p>
+          <div className="divide-y divide-white/5">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="px-5 py-4 flex items-center gap-4 animate-pulse">
+                <div className="w-9 h-9 rounded-xl bg-white/5 shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-3 bg-white/5 rounded w-1/3" />
+                  <div className="h-2 bg-white/5 rounded w-1/5" />
+                </div>
+                <div className="h-3 bg-white/5 rounded w-16" />
+                <div className="h-3 bg-white/5 rounded w-12" />
+                <div className="h-6 bg-white/5 rounded w-20" />
+              </div>
+            ))}
           </div>
         ) : isError ? (
           <div className="py-16 text-center text-red-400 text-sm">
