@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Workflow {
+  id            String      @id @default(uuid())
+  name          String
+  description   String?
+  is_active     Boolean     @default(false)
+  version       Int         @default(1)
+  input_schema  Json?
+  start_step_id String?
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @updatedAt
+
+  steps         Step[]
+  executions    Execution[]
+}
+
+model Step {
+  id          String    @id @default(uuid())
+  workflow_id String
+  name        String
+  step_type   StepType
+  index       Int
+  metadata    Json?
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+
+  workflow    Workflow  @relation(fields: [workflow_id], references: [id], onDelete: Cascade)
+  rules       Rule[]
+}
+
+model Rule {
+  id           String   @id @default(uuid())
+  step_id      String
+  condition    String
+  next_step_id String?
+  priority     Int
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  step         Step     @relation(fields: [step_id], references: [id], onDelete: Cascade)
+}
+
+model Execution {
+  id               String          @id @default(uuid())
+  workflow_id      String
+  workflow_version Int
+  data             Json
+  status           ExecutionStatus @default(pending)
+  current_step_id  String?
+  retries          Int             @default(0)
+  triggered_by     String
+  started_at       DateTime?
+  ended_at         DateTime?
+  logs             Json?
+  created_at       DateTime        @default(now())
+  updated_at       DateTime        @updatedAt
+
+  workflow         Workflow        @relation(fields: [workflow_id], references: [id], onDelete: Cascade)
+}
+
+enum StepType {
+  task
+  approval
+  notification
+}
+
+enum ExecutionStatus {
+  pending
+  in_progress
+  completed
+  failed
+  canceled
+}
