@@ -60,7 +60,7 @@ model Execution {
   triggered_by     String
   started_at       DateTime?
   ended_at         DateTime?
-  logs             Json?
+  logs             Json            @default("[]")
   created_at       DateTime        @default(now())
   updated_at       DateTime        @updatedAt
 
