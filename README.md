@@ -1,24 +1,32 @@
-Workflow Automation System
+# FlowEngine — Dynamic Workflow Automation System
 
-A full-stack app for building and running dynamic workflows. You define the steps, write rules to control routing, and the system handles execution, logging, and retries.
+A full-stack workflow automation platform for building, managing, and executing dynamic multi-step workflows with rule-based routing.
+
+**Live Demo:** https://workflow-automation-system-1.netlify.app
 
 ---
 
-What's in here
+## Tech Stack
 
-- React + Vite frontend with Tailwind CSS
-- Express + TypeScript backend
-- PostgreSQL via Prisma ORM (hosted on Neon - https://neon.tech)
-- Redis queue via BullMQ (hosted on Upstash - https://upstash.com)
-- A rule engine using jexl expressions for step routing
-- A separate worker process that picks up and runs jobs from the queue
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React 18, Vite, TypeScript, Tailwind CSS |
+| Backend | Node.js, Express, TypeScript |
+| Database | PostgreSQL via Prisma ORM (Neon) |
+| Queue | BullMQ + Redis (Upstash) |
+| Rule Engine | jexl expression evaluator |
+| Deployment | Netlify (frontend) + Render (backend) |
+
+---
+
+## Architecture
 
 ```
-Frontend (React)
+Frontend (React + Vite)
     │
     │  REST API
     ▼
-Backend (Express)
+Backend (Express + TypeScript)
     │
     ├── Prisma → PostgreSQL (Neon)
     │
@@ -30,105 +38,100 @@ Backend (Express)
 
 ---
 
-Before you start
+## Features
 
-You need:
-- Node.js 20+
-- A Neon Postgres database (free tier is fine) — https://neon.tech
-- An Upstash Redis instance (free tier is fine) — https://upstash.com
+- Create and manage workflows with custom steps and routing rules
+- Step types: task, approval, notification
+- Rule-based routing using jexl expressions (evaluated against execution input)
+- Async execution via BullMQ job queue
+- Real-time execution tracking with step-by-step timeline
+- Audit log with full execution history
+- Cancel, retry, and delete executions
+- Fully responsive — works on mobile and desktop
 
 ---
 
-Setup
+## Local Development
 
-1. Clone and install
+### Prerequisites
+
+- Node.js 20+
+- Neon PostgreSQL database — https://neon.tech
+- Upstash Redis instance — https://upstash.com
+
+### Setup
 
 ```bash
-git clone <repo-url>
-cd dynamic-workflow-automation
+# Clone and install all dependencies
+git clone https://github.com/harenguru/Workflow_Automation_System.git
+cd Workflow_Automation_System
 npm run install:all
 ```
 
-2. Set up environment variables
-
-Create a file at backend/.env with the following:
+Create `backend/.env`:
 
 ```env
-DATABASE_URL=postgresql://<user>:<password>@<host>/<db>?sslmode=require
+DATABASE_URL=postgresql://<user>:<password>@<host>/<db>?sslmode=require&pgbouncer=true
 DIRECT_URL=postgresql://<user>:<password>@<host>/<db>?sslmode=require
 REDIS_URL=rediss://:<password>@<host>:<port>
 PORT=3000
+NODE_ENV=development
 ```
 
-DIRECT_URL is needed by Prisma for migrations on Neon.
+> The `.env` file is not committed for security reasons.
+> Contact harenguruv@gmail.com to get the credentials for immediate local setup.
 
-Note : The .env file is not included for security reasons.
-Please contact me at harenguruv@gmail.com and I'll send it over so you can run the project immediately.
-
-3. Run migrations and seed
+### Database setup
 
 ```bash
 cd backend
-npx prisma migrate deploy
-npm run db:seed
+npx prisma db push
+npx prisma db seed
 cd ..
 ```
 
-This creates the tables and seeds two sample workflows: Expense Approval and Employee Onboarding.
-
-4. Start everything
+### Run
 
 ```bash
 npm run dev
 ```
 
-This runs three processes at once using concurrently:
+This starts three processes concurrently:
 
-| Process | What it does | Port |
+| Process | Description | Port |
 |---------|-------------|------|
-| API     | Express backend | 3000 |
-| WORKER  | BullMQ job worker | — |
-| UI      | Vite dev server | 5173 |
+| API | Express backend | 3000 |
+| WORKER | BullMQ job processor | — |
+| UI | Vite dev server | 5173 |
 
 Open http://localhost:5173
 
 ---
 
-Environment variables
+## Deployment
 
-| Variable | What it's for |
-|----------|--------------|
-| DATABASE_URL | Neon Postgres connection string |
-| DIRECT_URL | Same as above, used by Prisma for migrations |
-| REDIS_URL | Upstash Redis connection string |
-| PORT | Backend port, defaults to 3000 |
-
----
-
-Running tests
-
-```bash
-cd backend
-npm test
-```
-
-There are unit tests for the rule engine, integration tests for the workflow engine, and property-based tests using fast-check.
+| Service | Purpose | URL |
+|---------|---------|-----|
+| Netlify | Frontend hosting | https://workflow-automation-system-1.netlify.app |
+| Render | Backend API + Worker | https://workflow-automation-system-gmfq.onrender.com |
+| Neon | PostgreSQL database | https://neon.tech |
+| Upstash | Redis queue | https://upstash.com |
 
 ---
 
-API reference
+## API Reference
 
-Workflows
+### Workflows
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | POST | /api/workflows | Create a workflow |
-| GET | /api/workflows | List workflows (supports search + pagination) |
-| GET | /api/workflows/:id | Get a single workflow |
+| GET | /api/workflows | List workflows (search + pagination) |
+| GET | /api/workflows/:id | Get a workflow |
 | PUT | /api/workflows/:id | Update a workflow |
 | DELETE | /api/workflows/:id | Delete a workflow |
 
-Steps
+### Steps
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -137,184 +140,126 @@ Steps
 | PUT | /api/steps/:id | Update a step |
 | DELETE | /api/steps/:id | Delete a step |
 
-Rules
+### Rules
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | /api/steps/:stepId/rules | Add a rule to a step |
-| GET | /api/steps/:stepId/rules | List rules for a step |
+| POST | /api/steps/:stepId/rules | Add a rule |
+| GET | /api/steps/:stepId/rules | List rules |
 | PUT | /api/rules/:id | Update a rule |
 | DELETE | /api/rules/:id | Delete a rule |
 | PUT | /api/steps/:stepId/rules/reorder | Reorder rules by priority |
 
-Executions
+### Executions
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | /api/workflows/:workflowId/execute | Trigger a new execution |
+| POST | /api/workflows/:workflowId/execute | Trigger execution |
 | GET | /api/executions | List all executions |
-| GET | /api/executions/:id | Get execution status and logs |
-| POST | /api/executions/:id/cancel | Cancel a running execution |
-| POST | /api/executions/:id/retry | Retry a failed execution |
-| DELETE | /api/executions/:id | Delete an execution record |
-
-There's also a health check at GET /health.
+| GET | /api/executions/:id | Get execution details + logs |
+| POST | /api/executions/:id/cancel | Cancel execution |
+| POST | /api/executions/:id/retry | Retry failed execution |
+| DELETE | /api/executions/:id | Delete execution record |
+| GET | /health | Health check |
 
 ---
 
-How the rule engine works
+## Rule Engine
 
-Each step can have multiple rules. When the workflow reaches a step, it evaluates the rules in priority order (lowest number first) and takes the first one that matches.
+Rules are jexl expressions evaluated against the execution's input data. Rules are checked in priority order — first match wins.
 
-Rules are written as jexl expressions evaluated against the execution's input data.
+Supported operators: `==`, `!=`, `>`, `<`, `>=`, `<=`, `&&`, `||`
 
-Supported operators: ==, !=, >, <, >=, <=, &&, ||
-
-Use DEFAULT as the condition to match when nothing else does.
-
-Example:
+Use `DEFAULT` as the condition to always match (fallback rule).
 
 ```
 Input: { "amount": 250, "department": "Engineering" }
 
-Rule priority 0 → "amount > 500"   → false, skip
-Rule priority 1 → "amount > 100"   → true  → route to next step
-Rule priority 2 → "DEFAULT"        → skipped
+Priority 1 → "amount > 500"   → false, skip
+Priority 2 → "amount > 100"   → true  → route to next step
+Priority 3 → "DEFAULT"        → skipped
 ```
 
 ---
 
-Execution lifecycle
+## Execution Lifecycle
 
 ```
 pending → in_progress → completed
-                      → failed
+                      → failed (retryable)
                       → canceled
 ```
 
-- A failed execution can be retried — it creates a new run with retries + 1
-- A pending or in-progress execution can be canceled
-- The engine stops after 50 step iterations to prevent infinite loops
+- Failed executions can be retried (creates a new run with retries + 1)
+- Pending/in-progress executions can be canceled
+- Engine stops after 50 iterations to prevent infinite loops
 
 ---
 
-Sample workflows
+## Sample Workflows
 
-1. Expense Approval
+### 1. Expense Approval
 
-Trigger input:
-```json
-{ "amount": 250, "country": "US", "priority": "High", "department": "Engineering" }
-```
+Input fields: `amount` (number), `country` (string), `priority` (High/Medium/Low), `department` (string)
 
-| Input | Path taken |
-|-------|-----------|
+| Condition | Route |
+|-----------|-------|
 | amount > 100, country=US, priority=High | Manager Approval → Finance Notification → Task Completion |
-| amount > 5000, country=US, priority=High | Manager Approval → Finance Notification → CEO Approval → Task Completion |
+| amount > 5000 after Finance | Finance Notification → CEO Approval → Task Completion |
 | amount <= 100 or department=HR | Manager Approval → CEO Approval → Task Completion |
-| priority=Low, country!=US | Manager Approval → Task Rejection |
+| priority=Low, country≠US | Manager Approval → Task Rejection |
 
-2. Employee Onboarding
+### 2. Employee Onboarding
 
-Trigger input:
-```json
-{ "department": "engineering", "seniority": "senior", "employee_name": "Alice" }
-```
+Input fields: `department` (string), `seniority` (string), `employee_name` (string)
 
-| Input | Path taken |
-|-------|-----------|
-| department=engineering, seniority=senior | Initial Review → Engineering Onboarding → Manager Approval → Send Welcome Email |
-| department=engineering, seniority=junior | Initial Review → Engineering Onboarding → Send Welcome Email |
-| any other department | Initial Review → General Onboarding → Send Welcome Email |
+| Condition | Route |
+|-----------|-------|
+| department=engineering, seniority=senior | Initial Review → Engineering Onboarding → Manager Approval → Welcome Email |
+| department=engineering, other seniority | Initial Review → Engineering Onboarding → Welcome Email |
+| any other department | Initial Review → General Onboarding → Welcome Email |
 
 ---
 
-Execution example
-
-Using the Expense Approval workflow with this input:
-
-```json
-{ "amount": 250, "country": "US", "priority": "High", "department": "Engineering" }
-```
-
-The execution log looks like this:
-
-```json
-[
-  {
-    "step_name": "Manager Approval",
-    "step_type": "approval",
-    "evaluated_rules": [
-      { "rule": "amount > 100 && country == 'US' && priority == 'High'", "result": true },
-      { "rule": "amount <= 100 || department == 'HR'", "result": false }
-    ],
-    "selected_next_step": "Finance Notification",
-    "status": "completed",
-    "approver_id": null,
-    "error_message": null,
-    "started_at": "2026-02-18T10:00:00Z",
-    "ended_at": "2026-02-18T10:00:03Z"
-  },
-  {
-    "step_name": "Finance Notification",
-    "step_type": "notification",
-    "evaluated_rules": [
-      { "rule": "amount > 5000", "result": false },
-      { "rule": "DEFAULT", "result": true }
-    ],
-    "selected_next_step": "Task Completion",
-    "status": "completed",
-    "approver_id": null,
-    "error_message": null,
-    "started_at": "2026-02-18T10:00:03Z",
-    "ended_at": "2026-02-18T10:00:05Z"
-  },
-  {
-    "step_name": "Task Completion",
-    "step_type": "task",
-    "evaluated_rules": [],
-    "selected_next_step": null,
-    "status": "completed",
-    "approver_id": null,
-    "error_message": null,
-    "started_at": "2026-02-18T10:00:05Z",
-    "ended_at": "2026-02-18T10:00:06Z"
-  }
-]
-```
-
-The first rule matched (amount > 100 && country == 'US' && priority == 'High'), so the workflow routed through Manager Approval → Finance Notification → Task Completion and finished with status completed.
-
----
-
-Project structure
+## Project Structure
 
 ```
 .
 ├── backend/
 │   ├── prisma/
-│   │   ├── schema.prisma       # DB models
-│   │   ├── seed.ts             # Seeds sample workflows
+│   │   ├── schema.prisma         # DB models
+│   │   ├── seed.ts               # Seeds sample workflows
 │   │   └── migrations/
 │   └── src/
 │       ├── engine/
-│       │   ├── ruleEngine.ts       # jexl expression evaluator
-│       │   └── workflowEngine.ts   # step-by-step execution driver
+│       │   ├── ruleEngine.ts     # jexl expression evaluator
+│       │   └── workflowEngine.ts # step execution driver
 │       ├── queue/
-│       │   ├── producer.ts         # enqueues jobs
-│       │   └── consumer.ts         # processes jobs
-│       ├── services/           # business logic
-│       ├── controllers/        # route handlers
-│       ├── routes/             # route definitions
-│       ├── middleware/         # validation, error handling
-│       ├── server.ts           # API setup
-│       └── worker.ts           # worker entry point
+│       │   ├── producer.ts       # enqueues jobs
+│       │   └── consumer.ts       # processes jobs
+│       ├── services/             # business logic
+│       ├── controllers/          # route handlers
+│       ├── routes/               # route definitions
+│       ├── middleware/           # validation, error handling
+│       ├── server.ts             # API entry point
+│       └── worker.ts             # worker entry point
 ├── frontend/
 │   └── src/
-│       ├── pages/              # Dashboard, WorkflowEditor, ExecutionRunner, AuditLog
-│       ├── components/         # UI components
-│       ├── hooks/              # React Query hooks
-│       └── api/client.ts       # typed API client
-├── package.json                # root — runs everything with npm run dev
+│       ├── pages/                # Dashboard, WorkflowEditor, ExecutionRunner, AuditLog
+│       ├── components/           # UI components
+│       ├── hooks/                # React Query hooks
+│       └── api/client.ts         # typed API client
+├── package.json                  # root — runs all with npm run dev
 └── README.md
 ```
+
+---
+
+## Tests
+
+```bash
+cd backend
+npm test
+```
+
+Includes unit tests for the rule engine, integration tests for the workflow engine, and property-based tests using fast-check.
