@@ -71,11 +71,11 @@ export default function Dashboard() {
   const handleNext = useCallback(() => setPage((p) => Math.min(totalPages, p + 1)), [totalPages])
 
   return (
-    <div className="px-6 py-8 max-w-7xl mx-auto">
+    <div className="px-4 sm:px-6 py-8 max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-white">Workflows</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-white">Workflows</h1>
           <p className="text-sm text-slate-500 mt-0.5">Manage and run your automation workflows</p>
         </div>
         <button

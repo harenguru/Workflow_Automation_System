@@ -176,7 +176,7 @@ export default function ExecutionRunner() {
   const required = new Set(schema?.required ?? [])
 
   return (
-    <div className="px-6 py-8 max-w-2xl mx-auto">
+    <div className="px-4 sm:px-6 py-8 max-w-2xl mx-auto">
       <button
         onClick={() => navigate(`/workflows/${id}/edit`)}
         className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-300 mb-6 transition-colors"

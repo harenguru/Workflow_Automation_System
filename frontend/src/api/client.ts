@@ -81,7 +81,8 @@ export interface PaginatedExecutions {
 }
 
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
-  const url = `/api${path}`
+  const base = import.meta.env.VITE_API_URL ?? ''
+  const url = `${base}/api${path}`
   const options: RequestInit = { ...init }
 
   if (init?.method && init.method !== 'GET') {

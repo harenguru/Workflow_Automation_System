@@ -71,7 +71,7 @@ export default function ExecutionTracker() {
   }
 
   return (
-    <div className="px-6 py-8 max-w-3xl mx-auto">
+    <div className="px-4 sm:px-6 py-8 max-w-3xl mx-auto">
       <button
         onClick={() => navigate('/')}
         className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-300 mb-6 transition-colors"
@@ -84,7 +84,7 @@ export default function ExecutionTracker() {
         className="rounded-2xl p-6 mb-5"
         style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.07)' }}
       >
-        <div className="flex items-start justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-6">
           <div>
             <h1 className="text-xl font-bold text-white">Execution Details</h1>
             <p className="text-xs font-mono text-slate-600 mt-1">{execution.id}</p>
