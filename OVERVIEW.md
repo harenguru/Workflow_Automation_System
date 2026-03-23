@@ -1,126 +1,94 @@
 # Project Overview — FlowEngine
 
-**Live:** [https://workflow-automation-system-1.netlify.app](https://workflow-automation-system-1.netlify.app)
+**Live:** https://workflow-automation-system-1.netlify.app the Workflow Automation System. The system is designed around a seamless transition from workflow design to automated execution and real-time tracking.
 
-**Backend:** [https://workflow-automation-system-gmfq.onrender.com](https://workflow-automation-system-gmfq.onrender.com)
 
-**Repository:** [https://github.com/harenguru/Workflow_Automation_System](https://github.com/harenguru/Workflow_Automation_System)
+1. Simple Idea
 
----
+"User designs a workflow → defines rules → executes with input → tracks every step"
 
-## What is this?
+By combining a visual workflow builder with a rule-driven execution engine, the platform lets users automate multi-step processes with conditional branching, approvals, notifications, and task completions — all tracked in real time.
 
-FlowEngine is a dynamic workflow automation system that lets you define multi-step business processes, write rules to control how they route between steps, and execute them with full tracking and audit history.
 
-Think of it like a lightweight version of tools like Zapier or Temporal — fully custom-built, self-contained, and open source.
+2. Complete Workflow
 
----
+Step 1: Initial State
 
-## Core Concepts
+When users first load the application, the dashboard shows any existing workflows stored in the database.
+Two sample workflows are pre-seeded: Expense Approval and Employee Onboarding.
+The Audit Log starts empty until executions are triggered.
 
-**Workflow** — a named process made up of ordered steps. Has an input schema that defines what data it expects.
+Step 2: Create a Workflow
 
-**Step** — a single stage in a workflow. Three types:
-- `task` — a unit of work to be done
-- `approval` — requires a human decision
-- `notification` — sends an alert or message
+Users navigate to the Dashboard and click "New Workflow".
+A modal opens where they enter a workflow name.
+Once created, the workflow appears in the table with version 1 and status Active.
+Users can then open the Workflow Editor to configure it further.
 
-**Rule** — a condition attached to a step that determines which step runs next. Written as a jexl expression evaluated against the execution's input data. Rules are checked in priority order — first match wins. Use `DEFAULT` as a fallback.
+Step 3: Build the Workflow in the Editor
 
-**Execution** — a single run of a workflow with specific input data. Moves through steps based on rule evaluation. Has a full log of every step taken.
+Inside the Workflow Editor, users can:
+- Edit the workflow name and input schema (defines what fields the workflow expects at runtime).
+- Add steps of three types: Task (automated action), Approval (requires a user decision), Notification (sends an alert).
+- Each step has a name, type, order, and optional metadata like assignee email or notification channel.
 
----
+Step 4: Define Rules for Each Step
 
-## How an Execution Works
+Each step can have multiple rules that decide which step runs next based on the input data.
+Rules are written as logical expressions like: amount > 100 && country == 'US' && priority == 'High'
+Rules are evaluated in priority order — the first one that matches wins.
+A DEFAULT rule acts as a fallback when no other condition matches.
+Users can drag and drop rules to reorder their priority.
 
-1. User triggers a workflow with input data (e.g. `{ "amount": 500, "country": "US" }`)
-2. Backend creates an execution record and pushes a job to the Redis queue
-3. Worker picks up the job and runs the workflow engine
-4. Engine evaluates rules at each step to determine the next step
-5. Execution completes (or fails/cancels) with a full step-by-step log
-6. Frontend polls for status updates and displays the timeline
+Step 5: Execute the Workflow
 
----
+Users navigate to the Execute page for a workflow and fill in the required input fields defined by the input schema.
+Clicking "Start Execution" sends the input to the backend, which enqueues a job via BullMQ into Redis.
+The worker process picks up the job and starts running the workflow engine step by step.
 
-## Pages
+Step 6: Track Execution in Real Time
 
-| Page | What it does |
-|------|-------------|
-| Workflows (Dashboard) | Lists all workflows with search, pagination, and stat cards |
-| Workflow Editor | Edit workflow settings, manage steps, configure routing rules |
-| Execution Runner | Run a workflow — smart form fields based on input schema |
-| Execution Tracker | Real-time status + step-by-step timeline for a single execution |
-| Audit Log | Full history of all executions with status, duration, and delete |
+The Execution Tracker page polls the backend and shows live status updates.
+For each completed step it shows:
+- Which rules were evaluated and whether they matched.
+- Which step was selected next.
+- The step status, duration, and any error messages.
+The overall execution moves through states: pending → in_progress → completed / failed / canceled.
 
----
+Step 7: Audit Log
 
-## Key Technical Decisions
+The Audit Log page shows a full history of all executions across all workflows.
+Each row shows the workflow name, version, status, who triggered it, and start/end times.
+Users can click "View Logs" to inspect the full step-by-step log for any past execution.
+Failed executions can be retried directly from the tracker, which creates a new run with the same input.
 
-**BullMQ + Redis for async execution** — workflow runs are queued so the API responds immediately and the worker processes them in the background. This prevents long-running HTTP requests and enables retries.
 
-**jexl for rule evaluation** — safe, sandboxed expression evaluation without `eval()`. Supports complex boolean logic against arbitrary JSON input.
+3. Architectural Tech Stack
 
-**Prisma ORM** — type-safe database access with automatic migrations. Schema-first approach keeps the DB and TypeScript types in sync.
+Frontend
+- Framework: React + Vite
+- Styling: Tailwind CSS
+- Routing: React Router
+  - / → Dashboard
+  - /workflows/:id/edit → Workflow Editor
+  - /workflows/:id/execute → Execution Runner
+  - /executions/:id → Execution Tracker
+  - /audit → Audit Log
+- State and Data Fetching: TanStack React Query
 
-**React Query** — handles all server state, caching, and background refetching. The execution tracker uses polling to show live status updates.
+Backend
+- Runtime: Node.js
+- Framework: Express
+- Language: TypeScript
 
-**Separate worker process** — the BullMQ worker runs as a completely separate Node.js process from the API server. This keeps the API responsive even during heavy execution workloads.
+Database
+- ORM: Prisma
+- Database: PostgreSQL (hosted on Neon)
 
----
+Queue and Worker
+- Queue: BullMQ
+- Broker: Redis (hosted on Upstash)
 
-## Infrastructure
-
-```
-User Browser
-    │
-    ▼
-Netlify CDN (React SPA)
-https://workflow-automation-system-1.netlify.app
-    │
-    │  HTTPS API calls
-    ▼
-Render Web Service (Express API)
-https://workflow-automation-system-gmfq.onrender.com
-    │
-    ├──────────────────────────────┐
-    ▼                              ▼
-Neon PostgreSQL              Upstash Redis
-(workflows, steps,           (BullMQ job queue)
- rules, executions)                │
-                                   ▼
-                         Render Worker Process
-                         (BullMQ consumer)
-                                   │
-                                   ▼
-                         Workflow Engine
-                         (step-by-step execution
-                          + rule evaluation)
-```
-
----
-
-## Sample Workflow — Expense Approval
-
-Demonstrates multi-level approval routing based on amount, country, and priority.
-
-```
-Input: { amount: 250, country: "US", priority: "High", department: "Engineering" }
-
-Step 1 — Manager Approval
-  ├── amount > 100 && country == "US" && priority == "High"  →  Finance Notification ✓
-  ├── amount <= 100 || department == "HR"                    →  CEO Approval
-  ├── priority == "Low" && country != "US"                   →  Task Rejection
-  └── DEFAULT                                                →  Task Rejection
-
-Step 2 — Finance Notification
-  ├── amount > 5000  →  CEO Approval
-  └── DEFAULT        →  Task Completion ✓
-
-Result: completed in 3 steps
-```
-
----
-
-## Contact
-
-Built by Harenguruv — harenguruv@gmail.com
+Rule Engine
+- Library: jexl
+- Purpose: Evaluates dynamic conditions against execution input data to determine step routing
