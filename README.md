@@ -2,7 +2,11 @@
 
 A full-stack workflow automation platform for building, managing, and executing dynamic multi-step workflows with rule-based routing.
 
-**Live Demo:** https://workflow-automation-system-1.netlify.app
+**Live Demo:** [https://workflow-automation-system-1.netlify.app](https://workflow-automation-system-1.netlify.app)
+
+**Backend API:** [https://workflow-automation-system-gmfq.onrender.com](https://workflow-automation-system-gmfq.onrender.com)
+
+**Repository:** [https://github.com/harenguru/Workflow_Automation_System](https://github.com/harenguru/Workflow_Automation_System)
 
 ---
 
@@ -22,18 +26,18 @@ A full-stack workflow automation platform for building, managing, and executing 
 ## Architecture
 
 ```
-Frontend (React + Vite)
-    │
-    │  REST API
-    ▼
-Backend (Express + TypeScript)
-    │
-    ├── Prisma → PostgreSQL (Neon)
-    │
-    └── BullMQ → Redis (Upstash)
-            │
-            ▼
-        Worker → Workflow Engine → Rule Engine
+Frontend (React + Vite)  →  Netlify CDN
+         │
+         │  REST API (HTTPS)
+         ▼
+Backend (Express + TypeScript)  →  Render
+         │
+         ├── Prisma → PostgreSQL (Neon)
+         │
+         └── BullMQ → Redis (Upstash)
+                  │
+                  ▼
+              Worker → Workflow Engine → Rule Engine
 ```
 
 ---
@@ -41,8 +45,8 @@ Backend (Express + TypeScript)
 ## Features
 
 - Create and manage workflows with custom steps and routing rules
-- Step types: task, approval, notification
-- Rule-based routing using jexl expressions (evaluated against execution input)
+- Step types: `task`, `approval`, `notification`
+- Rule-based routing using jexl expressions evaluated against execution input
 - Async execution via BullMQ job queue
 - Real-time execution tracking with step-by-step timeline
 - Audit log with full execution history
@@ -56,8 +60,8 @@ Backend (Express + TypeScript)
 ### Prerequisites
 
 - Node.js 20+
-- Neon PostgreSQL database — https://neon.tech
-- Upstash Redis instance — https://upstash.com
+- Neon PostgreSQL database — [https://neon.tech](https://neon.tech)
+- Upstash Redis instance — [https://upstash.com](https://upstash.com)
 
 ### Setup
 
@@ -78,10 +82,9 @@ PORT=3000
 NODE_ENV=development
 ```
 
-> The `.env` file is not committed for security reasons.
-> Contact harenguruv@gmail.com to get the credentials for immediate local setup.
+> The `.env` file is not committed. Contact harenguruv@gmail.com for credentials.
 
-### Database setup
+### Database Setup
 
 ```bash
 cd backend
@@ -96,15 +99,15 @@ cd ..
 npm run dev
 ```
 
-This starts three processes concurrently:
+Starts three processes concurrently:
 
 | Process | Description | Port |
 |---------|-------------|------|
 | API | Express backend | 3000 |
-| WORKER | BullMQ job processor | — |
+| Worker | BullMQ job processor | — |
 | UI | Vite dev server | 5173 |
 
-Open http://localhost:5173
+Open [http://localhost:5173](http://localhost:5173)
 
 ---
 
@@ -112,10 +115,10 @@ Open http://localhost:5173
 
 | Service | Purpose | URL |
 |---------|---------|-----|
-| Netlify | Frontend hosting | https://workflow-automation-system-1.netlify.app |
-| Render | Backend API + Worker | https://workflow-automation-system-gmfq.onrender.com |
-| Neon | PostgreSQL database | https://neon.tech |
-| Upstash | Redis queue | https://upstash.com |
+| Netlify | Frontend hosting | [workflow-automation-system-1.netlify.app](https://workflow-automation-system-1.netlify.app) |
+| Render | Backend API + Worker | [workflow-automation-system-gmfq.onrender.com](https://workflow-automation-system-gmfq.onrender.com) |
+| Neon | PostgreSQL database | [neon.tech](https://neon.tech) |
+| Upstash | Redis queue | [upstash.com](https://upstash.com) |
 
 ---
 
@@ -125,42 +128,42 @@ Open http://localhost:5173
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | /api/workflows | Create a workflow |
-| GET | /api/workflows | List workflows (search + pagination) |
-| GET | /api/workflows/:id | Get a workflow |
-| PUT | /api/workflows/:id | Update a workflow |
-| DELETE | /api/workflows/:id | Delete a workflow |
+| POST | `/api/workflows` | Create a workflow |
+| GET | `/api/workflows` | List workflows (search + pagination) |
+| GET | `/api/workflows/:id` | Get a workflow |
+| PUT | `/api/workflows/:id` | Update a workflow |
+| DELETE | `/api/workflows/:id` | Delete a workflow |
 
 ### Steps
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | /api/workflows/:workflowId/steps | Add a step |
-| GET | /api/workflows/:workflowId/steps | List steps |
-| PUT | /api/steps/:id | Update a step |
-| DELETE | /api/steps/:id | Delete a step |
+| POST | `/api/workflows/:workflowId/steps` | Add a step |
+| GET | `/api/workflows/:workflowId/steps` | List steps |
+| PUT | `/api/steps/:id` | Update a step |
+| DELETE | `/api/steps/:id` | Delete a step |
 
 ### Rules
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | /api/steps/:stepId/rules | Add a rule |
-| GET | /api/steps/:stepId/rules | List rules |
-| PUT | /api/rules/:id | Update a rule |
-| DELETE | /api/rules/:id | Delete a rule |
-| PUT | /api/steps/:stepId/rules/reorder | Reorder rules by priority |
+| POST | `/api/steps/:stepId/rules` | Add a rule |
+| GET | `/api/steps/:stepId/rules` | List rules |
+| PUT | `/api/rules/:id` | Update a rule |
+| DELETE | `/api/rules/:id` | Delete a rule |
+| PUT | `/api/steps/:stepId/rules/reorder` | Reorder rules by priority |
 
 ### Executions
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | /api/workflows/:workflowId/execute | Trigger execution |
-| GET | /api/executions | List all executions |
-| GET | /api/executions/:id | Get execution details + logs |
-| POST | /api/executions/:id/cancel | Cancel execution |
-| POST | /api/executions/:id/retry | Retry failed execution |
-| DELETE | /api/executions/:id | Delete execution record |
-| GET | /health | Health check |
+| POST | `/api/workflows/:workflowId/execute` | Trigger execution |
+| GET | `/api/executions` | List all executions |
+| GET | `/api/executions/:id` | Get execution details + logs |
+| POST | `/api/executions/:id/cancel` | Cancel execution |
+| POST | `/api/executions/:id/retry` | Retry failed execution |
+| DELETE | `/api/executions/:id` | Delete execution record |
+| GET | `/health` | Health check |
 
 ---
 
@@ -186,11 +189,11 @@ Priority 3 → "DEFAULT"        → skipped
 
 ```
 pending → in_progress → completed
-                      → failed (retryable)
+                      → failed    (retryable)
                       → canceled
 ```
 
-- Failed executions can be retried (creates a new run with retries + 1)
+- Failed executions can be retried (creates a new run with `retries + 1`)
 - Pending/in-progress executions can be canceled
 - Engine stops after 50 iterations to prevent infinite loops
 
@@ -204,10 +207,10 @@ Input fields: `amount` (number), `country` (string), `priority` (High/Medium/Low
 
 | Condition | Route |
 |-----------|-------|
-| amount > 100, country=US, priority=High | Manager Approval → Finance Notification → Task Completion |
-| amount > 5000 after Finance | Finance Notification → CEO Approval → Task Completion |
-| amount <= 100 or department=HR | Manager Approval → CEO Approval → Task Completion |
-| priority=Low, country≠US | Manager Approval → Task Rejection |
+| `amount > 100 && country == "US" && priority == "High"` | Manager Approval → Finance Notification → Task Completion |
+| `amount > 5000` (after Finance) | Finance Notification → CEO Approval → Task Completion |
+| `amount <= 100 \|\| department == "HR"` | Manager Approval → CEO Approval → Task Completion |
+| `priority == "Low" && country != "US"` | Manager Approval → Task Rejection |
 
 ### 2. Employee Onboarding
 
@@ -215,8 +218,8 @@ Input fields: `department` (string), `seniority` (string), `employee_name` (stri
 
 | Condition | Route |
 |-----------|-------|
-| department=engineering, seniority=senior | Initial Review → Engineering Onboarding → Manager Approval → Welcome Email |
-| department=engineering, other seniority | Initial Review → Engineering Onboarding → Welcome Email |
+| `department == "engineering" && seniority == "senior"` | Initial Review → Engineering Onboarding → Manager Approval → Welcome Email |
+| `department == "engineering"` (other seniority) | Initial Review → Engineering Onboarding → Welcome Email |
 | any other department | Initial Review → General Onboarding → Welcome Email |
 
 ---
@@ -263,3 +266,9 @@ npm test
 ```
 
 Includes unit tests for the rule engine, integration tests for the workflow engine, and property-based tests using fast-check.
+
+---
+
+## Contact
+
+Built by Harenguruv — harenguruv@gmail.com

@@ -1,7 +1,10 @@
 # Project Overview — FlowEngine
 
-**Live:** https://workflow-automation-system-1.netlify.app
-**Repository:** https://github.com/harenguru/Workflow_Automation_System
+**Live:** [https://workflow-automation-system-1.netlify.app](https://workflow-automation-system-1.netlify.app)
+
+**Backend:** [https://workflow-automation-system-gmfq.onrender.com](https://workflow-automation-system-gmfq.onrender.com)
+
+**Repository:** [https://github.com/harenguru/Workflow_Automation_System](https://github.com/harenguru/Workflow_Automation_System)
 
 ---
 
@@ -9,7 +12,7 @@
 
 FlowEngine is a dynamic workflow automation system that lets you define multi-step business processes, write rules to control how they route between steps, and execute them with full tracking and audit history.
 
-Think of it like a lightweight version of tools like Zapier or Temporal — but fully custom-built, self-contained, and open source.
+Think of it like a lightweight version of tools like Zapier or Temporal — fully custom-built, self-contained, and open source.
 
 ---
 
@@ -61,7 +64,7 @@ Think of it like a lightweight version of tools like Zapier or Temporal — but 
 
 **React Query** — handles all server state, caching, and background refetching. The execution tracker uses polling to show live status updates.
 
-**Separate worker process** — the BullMQ worker runs as a completely separate Node.js process from the API server. This means the API stays responsive even during heavy execution workloads.
+**Separate worker process** — the BullMQ worker runs as a completely separate Node.js process from the API server. This keeps the API responsive even during heavy execution workloads.
 
 ---
 
@@ -72,23 +75,26 @@ User Browser
     │
     ▼
 Netlify CDN (React SPA)
+https://workflow-automation-system-1.netlify.app
+    │
     │  HTTPS API calls
     ▼
 Render Web Service (Express API)
+https://workflow-automation-system-gmfq.onrender.com
     │
-    ├──────────────────────────┐
-    ▼                          ▼
-Neon PostgreSQL          Upstash Redis
-(workflows, steps,       (BullMQ job queue)
- rules, executions)           │
-                              ▼
-                    Render Worker Process
-                    (BullMQ consumer)
-                              │
-                              ▼
-                    Workflow Engine
-                    (step-by-step execution
-                     + rule evaluation)
+    ├──────────────────────────────┐
+    ▼                              ▼
+Neon PostgreSQL              Upstash Redis
+(workflows, steps,           (BullMQ job queue)
+ rules, executions)                │
+                                   ▼
+                         Render Worker Process
+                         (BullMQ consumer)
+                                   │
+                                   ▼
+                         Workflow Engine
+                         (step-by-step execution
+                          + rule evaluation)
 ```
 
 ---
@@ -100,15 +106,15 @@ Demonstrates multi-level approval routing based on amount, country, and priority
 ```
 Input: { amount: 250, country: "US", priority: "High", department: "Engineering" }
 
-Manager Approval
-  ├── amount > 100 && country == "US" && priority == "High" → Finance Notification ✓
-  ├── amount <= 100 || department == "HR" → CEO Approval
-  ├── priority == "Low" && country != "US" → Task Rejection
-  └── DEFAULT → Task Rejection
+Step 1 — Manager Approval
+  ├── amount > 100 && country == "US" && priority == "High"  →  Finance Notification ✓
+  ├── amount <= 100 || department == "HR"                    →  CEO Approval
+  ├── priority == "Low" && country != "US"                   →  Task Rejection
+  └── DEFAULT                                                →  Task Rejection
 
-Finance Notification
-  ├── amount > 5000 → CEO Approval
-  └── DEFAULT → Task Completion ✓
+Step 2 — Finance Notification
+  ├── amount > 5000  →  CEO Approval
+  └── DEFAULT        →  Task Completion ✓
 
 Result: completed in 3 steps
 ```
