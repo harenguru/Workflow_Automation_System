@@ -5,7 +5,16 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import App from './App'
 import './index.css'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // Wait up to 60s before considering a request failed (covers Render cold start)
+      retry: 2,
+      retryDelay: 3000,
+      staleTime: 30_000,
+    },
+  },
+})
 
 const rootElement = document.getElementById('root')!
 

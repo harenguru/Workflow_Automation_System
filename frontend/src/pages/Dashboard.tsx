@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react'
-import { Search, Plus, ChevronLeft, ChevronRight, GitBranch, CheckCircle, XCircle } from 'lucide-react'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { Search, Plus, ChevronLeft, ChevronRight, GitBranch, CheckCircle, XCircle, Loader2 } from 'lucide-react'
 import { useWorkflows } from '../hooks/useWorkflows'
 import WorkflowTable from '../components/WorkflowTable'
 import CreateWorkflowModal from '../components/CreateWorkflowModal'
@@ -51,6 +51,8 @@ export default function Dashboard() {
   const [searchInput, setSearchInput] = useState('')
   const [search, setSearch] = useState('')
   const [showModal, setShowModal] = useState(false)
+  const [slowLoad, setSlowLoad] = useState(false)
+  const slowTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -61,6 +63,17 @@ export default function Dashboard() {
   }, [searchInput])
 
   const { data, isLoading, isError, error } = useWorkflows({ page, limit: LIMIT, search })
+
+  // Show "waking up" message if loading takes more than 4 seconds (Render cold start)
+  useEffect(() => {
+    if (isLoading) {
+      slowTimer.current = setTimeout(() => setSlowLoad(true), 4000)
+    } else {
+      if (slowTimer.current) clearTimeout(slowTimer.current)
+      setSlowLoad(false)
+    }
+    return () => { if (slowTimer.current) clearTimeout(slowTimer.current) }
+  }, [isLoading])
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / LIMIT)) : 1
   const allWorkflows: Workflow[] = data?.data ?? []
@@ -86,6 +99,15 @@ export default function Dashboard() {
           New Workflow
         </button>
       </div>
+
+      {/* Cold start banner */}
+      {isLoading && slowLoad && (
+        <div className="mb-6 flex items-center gap-3 rounded-xl px-4 py-3 text-sm text-amber-300"
+          style={{ background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.2)' }}>
+          <Loader2 size={15} className="animate-spin shrink-0" />
+          <span>Backend is waking up on Render's free tier — this takes up to 30 seconds on first load. Please wait...</span>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
