@@ -45,7 +45,7 @@ function SmartField({
 
   return (
     <div>
-      <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+      <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 cursor-default select-none">
         {label}
         {required && <span className="text-red-400 ml-1">*</span>}
       </label>
@@ -210,7 +210,7 @@ export default function ExecutionRunner() {
       >
         {/* Triggered by */}
         <div className="p-6" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-          <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+          <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 cursor-default select-none">
             Your Name / ID <span className="text-red-400">*</span>
           </label>
           <div className="relative">
@@ -224,15 +224,15 @@ export default function ExecutionRunner() {
               style={{ paddingLeft: '2.5rem' }}
             />
           </div>
-          <p className="text-xs text-slate-600 mt-1.5">Who is triggering this workflow run</p>
+          <p className="text-xs text-slate-600 mt-1.5 cursor-default select-none">Who is triggering this workflow run</p>
         </div>
 
         {/* Input fields */}
         <div className="p-6" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
           <div className="flex items-center justify-between mb-5">
             <div>
-              <p className="text-sm font-semibold text-slate-300">Workflow Inputs</p>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-sm font-semibold text-slate-300 cursor-default select-none">Workflow Inputs</p>
+              <p className="text-xs text-slate-500 mt-0.5 cursor-default select-none">
                 {hasSchema
                   ? 'Fill in the fields — these values route the workflow.'
                   : 'No input fields defined for this workflow.'}

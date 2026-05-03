@@ -36,8 +36,8 @@ function StatCard({
           <Icon size={18} className="text-white" />
         </div>
       </div>
-      <p className="text-3xl font-bold text-white mb-1">{value}</p>
-      <p className="text-xs text-slate-500 font-medium">{label}</p>
+      <p className="text-3xl font-bold text-white mb-1 cursor-default select-none">{value}</p>
+      <p className="text-xs text-slate-500 font-medium cursor-default select-none">{label}</p>
       <div
         className="absolute bottom-0 right-0 w-24 h-24 rounded-full opacity-5 -mr-8 -mb-8"
         style={{ background: gradient }}
@@ -88,8 +88,8 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-white">Workflows</h1>
-          <p className="text-sm text-slate-500 mt-0.5">Manage and run your automation workflows</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-white cursor-default select-none">Workflows</h1>
+          <p className="text-sm text-slate-500 mt-0.5 cursor-default select-none">Manage and run your automation workflows</p>
         </div>
         <button
           onClick={() => setShowModal(true)}

@@ -27,8 +27,8 @@ function formatDateTime(value: string | null): string {
 function MetaItem({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div>
-      <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">{label}</p>
-      <p className="text-sm font-semibold text-slate-200">{value}</p>
+      <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1 cursor-default select-none">{label}</p>
+      <p className="text-sm font-semibold text-slate-200 cursor-default select-none">{value}</p>
     </div>
   )
 }
@@ -132,7 +132,7 @@ export default function ExecutionTracker() {
         className="rounded-2xl p-6"
         style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.07)' }}
       >
-        <h2 className="text-sm font-semibold text-slate-300 mb-6">Execution Timeline</h2>
+        <h2 className="text-sm font-semibold text-slate-300 mb-6 cursor-default select-none">Execution Timeline</h2>
         <ExecutionLog logs={execution.logs ?? []} />
       </div>
     </div>

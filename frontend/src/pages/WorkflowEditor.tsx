@@ -110,11 +110,11 @@ export default function WorkflowEditor() {
         className="rounded-2xl p-6 mb-6 space-y-4"
         style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.07)' }}
       >
-        <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Workflow Settings</p>
+        <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest cursor-default select-none">Workflow Settings</p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 cursor-default select-none">
               Name <span className="text-red-400">*</span>
             </label>
             <input
@@ -177,8 +177,8 @@ export default function WorkflowEditor() {
           <div className="px-5 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-sm font-semibold text-slate-200">Steps</h2>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <h2 className="text-sm font-semibold text-slate-200 cursor-default select-none">Steps</h2>
+                <p className="text-xs text-slate-500 mt-0.5 cursor-default select-none">
                   Each step is a stage — task, approval, or notification.
                 </p>
               </div>
@@ -225,8 +225,8 @@ export default function WorkflowEditor() {
           {selectedStep ? (
             <div>
               <div className="px-5 py-4" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                <h2 className="text-sm font-semibold text-slate-200">Routing Rules</h2>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <h2 className="text-sm font-semibold text-slate-200 cursor-default select-none">Routing Rules</h2>
+                <p className="text-xs text-slate-500 mt-0.5 cursor-default select-none">
                   After <span className="font-semibold text-slate-300">{selectedStep.name}</span> completes,
                   these rules decide what runs next. First match wins.
                 </p>
@@ -243,8 +243,8 @@ export default function WorkflowEditor() {
               >
                 <span className="text-indigo-400 text-xl">→</span>
               </div>
-              <p className="text-sm font-semibold text-slate-400">Select a step to set routing rules</p>
-              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
+              <p className="text-sm font-semibold text-slate-400 cursor-default select-none">Select a step to set routing rules</p>
+              <p className="text-xs text-slate-600 mt-1.5 leading-relaxed cursor-default select-none">
                 Rules decide what happens after a step — which step runs next, or whether the workflow ends.
               </p>
             </div>

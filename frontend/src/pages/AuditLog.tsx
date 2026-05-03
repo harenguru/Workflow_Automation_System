@@ -36,8 +36,8 @@ export default function AuditLog() {
             <ClipboardList size={18} className="text-indigo-400" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white">Audit Log</h1>
-            <p className="text-sm text-slate-500 mt-0.5">All workflow execution history</p>
+            <h1 className="text-2xl font-bold text-white cursor-default select-none">Audit Log</h1>
+            <p className="text-sm text-slate-500 mt-0.5 cursor-default select-none">All workflow execution history</p>
           </div>
         </div>
         {data && (
@@ -82,13 +82,13 @@ export default function AuditLog() {
             <table className="w-full text-sm">
               <thead>
                 <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                  <th className="text-left px-5 py-3.5 text-[10px] font-semibold text-slate-500 uppercase tracking-widest">ID</th>
-                  <th className="text-left px-5 py-3.5 text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Workflow</th>
-                  <th className="text-left px-5 py-3.5 text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Triggered By</th>
-                  <th className="text-left px-5 py-3.5 text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Status</th>
-                  <th className="text-left px-5 py-3.5 text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Started</th>
-                  <th className="text-left px-5 py-3.5 text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Ended</th>
-                  <th className="text-left px-5 py-3.5 text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Retries</th>
+                  <th className="text-left px-5 py-3.5 text-[10px] font-semibold text-slate-500 uppercase tracking-widest cursor-default select-none">ID</th>
+                  <th className="text-left px-5 py-3.5 text-[10px] font-semibold text-slate-500 uppercase tracking-widest cursor-default select-none">Workflow</th>
+                  <th className="text-left px-5 py-3.5 text-[10px] font-semibold text-slate-500 uppercase tracking-widest cursor-default select-none">Triggered By</th>
+                  <th className="text-left px-5 py-3.5 text-[10px] font-semibold text-slate-500 uppercase tracking-widest cursor-default select-none">Status</th>
+                  <th className="text-left px-5 py-3.5 text-[10px] font-semibold text-slate-500 uppercase tracking-widest cursor-default select-none">Started</th>
+                  <th className="text-left px-5 py-3.5 text-[10px] font-semibold text-slate-500 uppercase tracking-widest cursor-default select-none">Ended</th>
+                  <th className="text-left px-5 py-3.5 text-[10px] font-semibold text-slate-500 uppercase tracking-widest cursor-default select-none">Retries</th>
                   <th className="px-5 py-3.5" />
                 </tr>
               </thead>
