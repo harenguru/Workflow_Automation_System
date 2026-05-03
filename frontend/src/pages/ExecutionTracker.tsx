@@ -98,8 +98,7 @@ export default function ExecutionTracker() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
-          <MetaItem label="Version" value={`v${execution.workflow_version}`} />
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-5">
           <MetaItem label="Retries" value={execution.retries} />
           <MetaItem label="Started" value={formatDateTime(execution.started_at)} />
           <MetaItem label="Ended" value={formatDateTime(execution.ended_at)} />

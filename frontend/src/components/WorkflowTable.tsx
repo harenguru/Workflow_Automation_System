@@ -64,8 +64,6 @@ export default function WorkflowTable({ workflows }: WorkflowTableProps) {
             </div>
             <div className="flex items-center gap-2 text-xs text-slate-500">
               <span>{workflow._count?.steps ?? 0} steps</span>
-              <span>·</span>
-              <span className="font-mono">v{workflow.version}</span>
             </div>
             <div className="flex items-center gap-2">
               <button onClick={() => navigate(`/workflows/${workflow.id}/edit`)}
@@ -110,7 +108,6 @@ export default function WorkflowTable({ workflows }: WorkflowTableProps) {
             <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
               <th className="px-5 py-3.5 text-left text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Name</th>
               <th className="px-5 py-3.5 text-left text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Steps</th>
-              <th className="px-5 py-3.5 text-left text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Version</th>
               <th className="px-5 py-3.5 text-left text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Status</th>
               <th className="px-5 py-3.5 text-right text-[10px] font-semibold text-slate-500 uppercase tracking-widest">Actions</th>
             </tr>
@@ -138,12 +135,6 @@ export default function WorkflowTable({ workflows }: WorkflowTableProps) {
                 </td>
                 <td className="px-5 py-4">
                   <span className="text-sm text-slate-400">{workflow._count?.steps ?? 0} steps</span>
-                </td>
-                <td className="px-5 py-4">
-                  <span className="text-xs font-mono px-2 py-1 rounded-lg text-slate-400"
-                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                    v{workflow.version}
-                  </span>
                 </td>
                 <td className="px-5 py-4">
                   {workflow.is_active ? (

@@ -195,12 +195,6 @@ export default function ExecutionRunner() {
         </div>
         <div>
           <h1 className="text-xl font-bold text-white">{workflow.name}</h1>
-          <span
-            className="text-xs font-mono text-slate-500 px-2 py-0.5 rounded-lg mt-0.5 inline-block"
-            style={{ background: 'rgba(255,255,255,0.05)' }}
-          >
-            v{workflow.version}
-          </span>
         </div>
       </div>
 
