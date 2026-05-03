@@ -80,7 +80,7 @@ export interface PaginatedExecutions {
   limit: number
 }
 
-async function apiFetch<T>(path: string, init?: RequestInit, timeoutMs = 55000): Promise<T> {
+async function apiFetch<T>(path: string, init?: RequestInit, timeoutMs = 90000): Promise<T> {
   const base = import.meta.env.VITE_API_URL ?? ''
   const url = `${base}/api${path}`
   const controller = new AbortController()
@@ -154,6 +154,12 @@ export const rulesApi = {
   reorder: (stepId: string, priorities: { id: string; priority: number }[]) =>
     apiFetch<Rule[]>(`/steps/${stepId}/rules/reorder`, { method: 'PUT', body: JSON.stringify({ priorities }) }),
   delete: (id: string) => apiFetch<void>(`/rules/${id}`, { method: 'DELETE' }),
+}
+
+// Silently ping the backend on app load to wake up Render free tier
+export function pingBackend(): void {
+  const base = import.meta.env.VITE_API_URL ?? ''
+  fetch(`${base}/health`, { method: 'GET' }).catch(() => {})
 }
 
 export const executionsApi = {

@@ -4,6 +4,10 @@ import { BrowserRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import App from './App'
 import './index.css'
+import { pingBackend } from './api/client'
+
+// Wake up Render backend immediately on app load
+pingBackend()
 
 const queryClient = new QueryClient({
   defaultOptions: {
