@@ -9,6 +9,7 @@ function getConnectionOptions() {
     password: url.password || undefined,
     tls: url.protocol === 'rediss:' ? {} : undefined,
     maxRetriesPerRequest: null as null,
+    connectTimeout: 10000,
   };
 }
 
