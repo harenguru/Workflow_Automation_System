@@ -31,4 +31,5 @@ export function errorHandler(
   }
 
   res.status(500).json({ error: 'Internal server error' });
+  console.error('[errorHandler]', err.name, err.message, err.stack);
 }

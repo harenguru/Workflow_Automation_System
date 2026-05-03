@@ -57,7 +57,17 @@ export async function triggerExecution(workflowId: string, data: { data: object;
     },
   })
 
-  await enqueueExecution(execution.id)
+  try {
+    await enqueueExecution(execution.id)
+  } catch (redisErr) {
+    // Redis unavailable — run the workflow synchronously as fallback
+    console.warn('[executionService] Redis enqueue failed, running synchronously:', (redisErr as Error).message)
+    const { runExecution } = await import('../engine/workflowEngine')
+    runExecution(execution.id).catch((e: Error) => {
+      console.error('[executionService] Sync execution failed:', e.message)
+    })
+  }
+
   return execution
 }
 
@@ -136,6 +146,15 @@ export async function retryExecution(id: string) {
     },
   })
 
-  await enqueueExecution(newExecution.id)
+  try {
+    await enqueueExecution(newExecution.id)
+  } catch (redisErr) {
+    console.warn('[executionService] Redis enqueue failed on retry, running synchronously:', (redisErr as Error).message)
+    const { runExecution } = await import('../engine/workflowEngine')
+    runExecution(newExecution.id).catch((e: Error) => {
+      console.error('[executionService] Sync retry execution failed:', e.message)
+    })
+  }
+
   return newExecution
 }
