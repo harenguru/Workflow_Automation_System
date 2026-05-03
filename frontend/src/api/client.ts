@@ -80,10 +80,13 @@ export interface PaginatedExecutions {
   limit: number
 }
 
-async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
+async function apiFetch<T>(path: string, init?: RequestInit, timeoutMs = 55000): Promise<T> {
   const base = import.meta.env.VITE_API_URL ?? ''
   const url = `${base}/api${path}`
-  const options: RequestInit = { ...init }
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), timeoutMs)
+
+  const options: RequestInit = { ...init, signal: controller.signal }
 
   if (init?.method && init.method !== 'GET') {
     options.headers = {
@@ -92,7 +95,17 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
     }
   }
 
-  const res = await fetch(url, options)
+  let res: Response
+  try {
+    res = await fetch(url, options)
+  } catch (err) {
+    clearTimeout(timer)
+    if ((err as Error).name === 'AbortError') {
+      throw new Error('Request timed out — the server may be waking up. Please try again.')
+    }
+    throw err
+  }
+  clearTimeout(timer)
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}))
